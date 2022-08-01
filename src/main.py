@@ -8,14 +8,13 @@ import json
 
 from torch import cosine_similarity
 
-import bot_login
 import re
 import pandas as pd
 
-from db import DbService, SaveJsonToFileStrategy
+from db import DbService, sqlAlchemyStrategy, db_url
 from bot import RedditBot
 from services import ApiClient, Service
-from analysis import BertComparitor, PostComparisonProvider
+from analysis import BertComparitor, PostComparison
         
 
 def main(Service: Service):
@@ -28,11 +27,14 @@ def main(Service: Service):
     bot = RedditBot(
             Service(
                 ApiClient = ApiClient(),
-                DbService = DbService(
-                         SaveJsonToFileStrategy())
-                    , analyzerService = PostComparisonProvider(BertComparitor('bert-base-nli-mean-tokens'))))
+                db = DbService(
+                        sqlAlchemyStrategy(db_url=db_url)),
+                     comparitor = PostComparison(BertComparitor())
+                     )
+                     )
 
     bot.run()
+
     
 if __name__ == "__main__":
 
