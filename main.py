@@ -7,7 +7,6 @@ load_dotenv()
 url: str = os.getenv("SUPABASE_URL")
 key: str = os.getenv("SUPABASE_KEY")
 
-print(f"url: {url}, key: {key}")
 supabase: Client = create_client(url, key)
 
 
@@ -23,8 +22,21 @@ redditClient = praw.Reddit(
 print(redditClient.user.me())
 subreddit = redditClient.subreddit("ProgrammingBuddies")
 
-for submission in subreddit.new(limit=10):
-    print(submission)
-    # data = supabase.table("posts").insert({"title":submission.title}).execute()
+def is_looking_for_buddies_flare(submission) -> bool: # TODO: add type hinting
+    return submission.link_flair_text.lower() == "LOOKING FOR BUDDIES".lower()
+
+number_of_posts: int = 0
+for submission in subreddit.stream.submissions():
+    if submission.link_flair_text is None:
+        continue
+    elif is_looking_for_buddies_flare(submission):
+        number_of_posts += 1
+        print(f'number of posts: {number_of_posts}')
+        print(f'New post: {submission} \n')
+        print(f"submission: {redditClient.submission(id=submission.id)}")
+    else:
+        continue
+    # show post properties
+
 
 
