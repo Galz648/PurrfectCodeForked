@@ -25,7 +25,6 @@ def post_exists(post_id: str) -> bool:
 
 def insert_post(post_info: dict) -> bool:
     data = supabase.table("Posts").insert(post_info).execute()
-    return data.status_code == 201
 
 def create_post_info(submission) -> dict: # TODO: add type hinting
     body: str = submission.selftext
