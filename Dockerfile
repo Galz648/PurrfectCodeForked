@@ -7,8 +7,10 @@ WORKDIR /app
 # install poetry 
 RUN pip install poetry
 
-# install dependencies with poetry
+# dump poetry dependencies
+RUN poetry export -f requirements.txt --output requirements.txt
 
-RUN poetry install
+# install dependencies with pip
+RUN pip install -r requirements.txt
 
 CMD ["python", "main.py"]
