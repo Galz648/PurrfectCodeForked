@@ -4,7 +4,6 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
 
 
 import re
@@ -16,13 +15,12 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
 from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.metrics.pairwise import euclidean_distances
 
-nltk.download('stopwords')
-nltk.download('wordnet')
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
+
+# nltk.download('stopwords')
+# nltk.download('wordnet')
+# nltk.download('punkt')
+# nltk.download('averaged_perceptron_tagger')
 
 wl = WordNetLemmatizer()
 
@@ -90,13 +88,6 @@ class BertComparitor(SentencesComparison): # TODO:
         """
         return self.model.encode(text)
 
-
-class PostComparison:
-    def __init__(self, strategy: SentencesComparison):
-        self.strategy = strategy
-
-    def compare(self, canidate: str, data: pd.DataFrame) -> pd.DataFrame:
-        return self.strategy.compare(canidate, data)
 
 
 def simple_cleanup(text):
@@ -176,45 +167,3 @@ def preprocess(text):
     text = lemmatize(text)
     return text
 
-
-# def process(post_info: dict): #TODO: change the name to
-#     text = post_info['title'] + ' ' + post_info['body']
-#     post_info['clean_body'] = text.apply(preprocess)
-#     return post_info
-
-
-
-def encode_text(model, text):
-    return model.encode(text)
-
-def compare(canidate, target):
-    print('Comparing...')
-    df = process(canidate)
-    df_target = process(target)
-    model_name = 'bert-base-nli-mean-tokens'
-    model = SentenceTransformer(model_name)
-
-    text_embeddings = model.encode(df['text'])
-    target_embeddings = model.encode(df_target['text'])
-
-    pairwise_similarities=cosine_similarity(text_embeddings, target_embeddings)
-
-    # pairwise_similarities
-    df_similarity_matrix = pd.DataFrame(pairwise_similarities, columns=range(pairwise_similarities.shape[0]), index=range(pairwise_similarities.shape[1]))
-
-    # In[20]:
-    s = df_similarity_matrix.unstack()
-    so = s.sort_values(kind="quicksort", ascending=False)
-
-    # so
-    df_so = pd.DataFrame(so, columns=['similarity'])
-    # df_so = pd.DataFrame(so, columns=['similarity'])
-    # dataframe drop values with similarity around 1.0
-    mask = df_so['similarity'].apply(lambda x: not math.isclose(x, 1.0, rel_tol=0.01))
-    df_so = df_so[mask]
-    # drop duplicates based on similarity value
-    df_so = df_so.drop_duplicates(subset=['similarity'], keep='first')
-    # sort by index
-    df_so = df_so.sort_values(by='similarity', ascending=False)
-    # df_so.head(50)
-    return df, df_so
