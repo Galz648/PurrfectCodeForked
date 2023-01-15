@@ -46,9 +46,7 @@ def drop_duplicates_and_similarities(df_so):
     df_so = df_so[df_so['similarity'] > 0.85]
     return df_so
 
-def get_similar_posts(model_name):
-    posts_df = load_posts_as_dataframe()
-    print(posts_df)
+def get_similar_posts(model_name: str, posts_df: pd.DataFrame):
 
     print(posts_df)
     text_embeddings = encode_text(model_name, posts_df)
@@ -92,12 +90,13 @@ def filter_identical_authors(result_df):
 # results_summary['id'] = df['id'].iloc[:]
 # results_summary
 
-def generate_filtered_similar_posts_df(model_name):
-    similarity_score_df, posts_df = get_similar_posts(model_name)
+def generate_filtered_similar_posts_df(model_name: str, posts_df: pd.DataFrame):
+    similarity_score_df, posts_df = get_similar_posts(model_name, posts_df)
     result_df = generate_result_df(similarity_score_df, posts_df)
     result_df = filter_identical_authors(result_df)
     return result_df
-if __name__ == '__main__':
-    model_name = 'bert-base-nli-mean-tokens'
-    result_df = generate_filtered_similar_posts_df(model_name)
-    print(result_df.columns)
+
+def createPostsComparisons(posts_df: pd.DataFrame) -> pd.DataFrame:
+    model_name = 'bert-base-nli-mean-tokens' # TODO: make this configurable
+    result_df = generate_filtered_similar_posts_df(model_name, posts_df)
+    return result_df

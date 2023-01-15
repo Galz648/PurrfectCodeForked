@@ -57,7 +57,7 @@ class SentencesComparison(abc.ABC):
 
 
 
-class BertComparitor(SentencesComparison):
+class BertComparitor(SentencesComparison): # TODO: 
     def __init__(self):
         self.model_name = 'bert-base-nli-mean-tokens' # move to config file
         self.model = SentenceTransformer(self.model_name)

@@ -49,3 +49,26 @@ def loadPostsAsDataFrame() -> pd.DataFrame:
     data = supabase.table("Posts").select("*").execute()
     posts = data.data
     return pd.DataFrame(posts)
+
+
+
+def upsertPostComparisons(comparisons: pd.DataFrame):
+    for _, row in comparisons.iterrows():
+        post_id_0 = row["id_level_0"] # TODO: rename to post_id_0
+        post_id_1 = row["id_level_1"] # TODO: rename to post_id_1
+        similarity = float(row["similarity"])
+
+        # check if a comparison already exists
+        data = supabase.table("Comparisons").select("*").eq("post_id_0", post_id_0).eq("post_id_1", post_id_1).execute()
+        # check if a reverse comparison already exists
+        data_reverse = supabase.table("Comparisons").select("*").eq("post_id_0", post_id_1).eq("post_id_1", post_id_0).execute()
+        if len(data.data) == 0 and len(data_reverse.data) == 0:
+            # insert comparison
+            supabase.table("Comparisons").insert({
+                "post_id_0": post_id_0,
+                "post_id_1": post_id_1,
+                "similarity": similarity
+            }).execute()
+        print(f"comparison between {post_id_0} and {post_id_1} already exists")
+
+
