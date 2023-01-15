@@ -1,0 +1,6 @@
+# generate an example for a worker process using a dockerfile
+build:
+  docker:
+    worker: Dockerfile
+run:
+  worker: python main.py
