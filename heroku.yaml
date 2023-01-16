@@ -1,0 +1,11 @@
+# generate an example for a worker process using a dockerfile
+build:
+  docker:
+    stack: container
+    worker: Dockerfile
+    config:
+      BUILDPACK_URL: https://github.com/megacool/heroku-buildpack-python-nltk.git
+
+run:
+  worker:
+    command: python main.py
