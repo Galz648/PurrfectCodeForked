@@ -19,7 +19,7 @@ def foo():
     print('running scheduled job: foo')
     sys.stdout.flush()
 
-scheduler.add_job(compute_and_update_similar_posts, 'interval', hours=6, id='compare_posts')
+scheduler.add_job(compute_and_update_similar_posts, 'interval', hours=1, id='compare_posts')
 scheduler.add_job(foo, 'interval', hours=1, id='foo')
 # run the scheduler
 def run_schuled_jobs():
