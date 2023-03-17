@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "buddyfinder"
+version = "0.1.0"
+description = ""
+authors = ["Gal Zafar <theycallmefachfach@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+supabase = "^0.7.1"
+pandas = "^1.5.2"
+python-dotenv = "^0.21.0"
+praw = "^7.6.1"
+apscheduler = "^3.9.1.post1"
+nltk = "^3.8.1"
+scikit-learn = "^1.2.0"
+numpy = "^1.24.1"
+sentence-transformers = "^2.2.2"
+prisma = "^0.8.2"
+pyright = "^1.1.299"
+openai = {extras = ["embeddings"], version = "^0.27.2"}
+matplotlib = "^3.7.1"
+celery = "^5.2.7"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
