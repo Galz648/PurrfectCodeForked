@@ -1,0 +1,33 @@
+generator client {
+  provider             = "prisma-client-py"
+  interface            = "sync"
+  recursive_type_depth = 5 // taken from the docs
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id             Int             @id @default(autoincrement())
+  author         String?
+  body           String?
+  clean_body     String?
+  url            String?
+  flair          String?
+  title          String?
+  embedding      Json?
+  PostComprisonA PostComprison[] @relation("second_post") 
+  PostComprisonB PostComprison[] @relation("first_post")
+}
+
+model PostComprison {
+  id             Int  @id @default(autoincrement())
+  first_post_id  Int
+  second_post_id Int
+  first_post     Post @relation("first_post", fields: [first_post_id], references: [id])
+  second_post    Post @relation("second_post", fields: [second_post_id], references: [id])
+
+  @@unique([first_post_id, second_post_id])
+}
